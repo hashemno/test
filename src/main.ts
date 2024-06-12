@@ -27,13 +27,13 @@ WA.onInit().then(async () => {
         console.error('Error initializing Scripting API Extra:', e);
     }
 
-    // Initialize door state
-    const doorState = await WA.state.getVariable<boolean>('doorState');
+    // Initialize door state with type assertion
+    const doorState = (await WA.state.getVariable('doorState')) as boolean;
     displayDoor(doorState);
 
     // Subscribe to changes in door state
-    WA.state.onVariableChange('doorState').subscribe((newDoorState) => {
-        displayDoor(newDoorState);
+    WA.state.onVariableChange('doorState').subscribe((newDoorState: any) => {
+        displayDoor(newDoorState as boolean);
     });
 
     // Manage door state when entering or leaving the inside doorstep
