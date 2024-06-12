@@ -6,7 +6,6 @@ import { ActionMessage } from "@workadventure/iframe-api-typings";
 console.log('Script started successfully');
 
 let currentPopup: any = undefined;
-let doorState: boolean = true; 
 
 function displayDoor(state: boolean) {
     if (state) {
@@ -25,48 +24,45 @@ WA.onInit().then(async () => {
         await bootstrapExtra();
         console.log('Scripting API Extra ready');
     } catch (e) {
-        console.error(e);
+        console.error('Error initializing Scripting API Extra:', e);
     }
 
+    // Initialize door state
+    const doorState = await WA.state.getVariable<boolean>('doorState');
     displayDoor(doorState);
 
+    // Subscribe to changes in door state
     WA.state.onVariableChange('doorState').subscribe((newDoorState) => {
-        doorState = newDoorState as boolean;
-        displayDoor(doorState);
+        displayDoor(newDoorState);
     });
 
+    // Manage door state when entering or leaving the inside doorstep
     WA.room.onEnterLayer('doorsteps/inside_doorstep').subscribe(() => {
-        WA.state.doorState = true;
-        displayDoor(true);
+        WA.room.showLayer('door/door_opened');
+        WA.room.hideLayer('door/door_closed');
+        WA.state.setVariable('doorState', true);
     });
 
     WA.room.onLeaveLayer('doorsteps/inside_doorstep').subscribe(() => {
-        WA.state.doorState = false;
-        displayDoor(false);
+        WA.room.hideLayer('door/door_opened');
+        WA.room.showLayer('door/door_closed');
+        WA.state.setVariable('doorState', false);
     });
 
+    // Manage popup and camera when entering or leaving the clock area
     WA.room.area.onEnter('clock').subscribe(() => {
         const today = new Date();
         const time = `${today.getHours()}:${today.getMinutes()}`;
         currentPopup = WA.ui.openPopup("clockPopup", `It's ${time}`, []);
-        WA.camera.set(100, 100, 500, 500, false, false); 
+        WA.camera.set(100, 100, 500, 500, false, false);
     });
 
     WA.room.area.onLeave('clock').subscribe(() => {
         closePopup();
-        WA.camera.set(0, 0, 0, 0, false, false); 
+        WA.camera.reset();
     });
 
- 
-    document.addEventListener('keydown', (event) => {
-        if (event.code === 'Space') {
-            doorState = !doorState;
-            WA.state.doorState = doorState;
-            displayDoor(doorState);
-        }
-    });
-
-}).catch(e => console.error(e));
+}).catch(e => console.error('Error during initialization:', e));
 
 function closePopup() {
     if (currentPopup !== undefined) {
