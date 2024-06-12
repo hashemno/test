@@ -1,7 +1,6 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
-import { ActionMessage } from "@workadventure/iframe-api-typings";
 
 console.log('Script started successfully');
 
@@ -28,25 +27,25 @@ WA.onInit().then(async () => {
     }
 
     // Initialize door state with type assertion
-    const doorState = (await WA.state.getVariable('doorState')) as boolean;
+    const doorState = (await WA.state.getVariable<boolean>('doorState')) ?? false;
     displayDoor(doorState);
 
     // Subscribe to changes in door state
-    WA.state.onVariableChange('doorState').subscribe((newDoorState: any) => {
-        displayDoor(newDoorState as boolean);
+    WA.state.onVariableChange<boolean>('doorState').subscribe((newDoorState) => {
+        displayDoor(newDoorState);
     });
 
     // Manage door state when entering or leaving the inside doorstep
     WA.room.onEnterLayer('doorsteps/inside_doorstep').subscribe(() => {
         WA.room.showLayer('door/door_opened');
         WA.room.hideLayer('door/door_closed');
-        WA.state.setVariable('doorState', true);
+        WA.state.setVariable<boolean>('doorState', true);
     });
 
     WA.room.onLeaveLayer('doorsteps/inside_doorstep').subscribe(() => {
         WA.room.hideLayer('door/door_opened');
         WA.room.showLayer('door/door_closed');
-        WA.state.setVariable('doorState', false);
+        WA.state.setVariable<boolean>('doorState', false);
     });
 
     // Manage popup and camera when entering or leaving the clock area
@@ -59,7 +58,7 @@ WA.onInit().then(async () => {
 
     WA.room.area.onLeave('clock').subscribe(() => {
         closePopup();
-        WA.camera.reset();
+        WA.camera.set(0, 0, 0, 0, false, false);
     });
 
 }).catch(e => console.error('Error during initialization:', e));
