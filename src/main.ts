@@ -4,10 +4,8 @@ import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
 console.log('Script started successfully');
 
-// Entfernung der Deklaration von currentPopup
-// let currentPopup: any = undefined;
+let currentPopup: any = undefined;
 
-/*
 function displayDoor(state: unknown) {
     if (state === true) {
         WA.room.showLayer('door/door_opened');
@@ -17,7 +15,6 @@ function displayDoor(state: unknown) {
         WA.room.showLayer('door/door_closed');
     }
 }
-*/
 
 WA.onInit().then(async () => {
     console.log('Scripting API ready');
@@ -26,19 +23,17 @@ WA.onInit().then(async () => {
     WA.room.area.onEnter('clock').subscribe(() => {
         const today = new Date();
         const time = `${today.getHours()}:${today.getMinutes()}`;
-        // Entfernung der Verwendung von currentPopup
-        WA.ui.openPopup("clockPopup", `It's ${time}`, []);
+        currentPopup = WA.ui.openPopup("clockPopup", `It's ${time}`, []);
     });
 
     WA.room.area.onLeave('clock').subscribe(closePopup);
 
     WA.state.onVariableChange('doorState').subscribe((doorState) => {
-        // displayDoor(doorState);
+        displayDoor(doorState);
     });
 
-    // displayDoor(WA.state.doorState);
+    displayDoor(WA.state.doorState);
 
-    /*
     WA.room.onEnterLayer('doorsteps/inside_doorstep').subscribe(() => {
         WA.state.doorState = true;
     });
@@ -46,7 +41,6 @@ WA.onInit().then(async () => {
     WA.room.onLeaveLayer('doorsteps/inside_doorstep').subscribe(() => {
         WA.state.doorState = false;
     });
-    */
 
     try {
         await bootstrapExtra();
@@ -57,13 +51,11 @@ WA.onInit().then(async () => {
 
 }).catch(e => console.error(e));
 
-/*
 function closePopup() {
     if (currentPopup !== undefined) {
         currentPopup.close();
         currentPopup = undefined;
     }
 }
-*/
 
 export {};
