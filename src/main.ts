@@ -4,7 +4,8 @@ import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
 console.log('Script started successfully');
 
-let currentPopup: any = undefined;
+// Entfernung der Deklaration von currentPopup
+// let currentPopup: any = undefined;
 
 /*
 function displayDoor(state: unknown) {
@@ -25,7 +26,8 @@ WA.onInit().then(async () => {
     WA.room.area.onEnter('clock').subscribe(() => {
         const today = new Date();
         const time = `${today.getHours()}:${today.getMinutes()}`;
-        currentPopup = WA.ui.openPopup("clockPopup", `It's ${time}`, []);
+        // Entfernung der Verwendung von currentPopup
+        WA.ui.openPopup("clockPopup", `It's ${time}`, []);
     });
 
     WA.room.area.onLeave('clock').subscribe(closePopup);
