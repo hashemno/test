@@ -7,7 +7,7 @@ console.log('Script started successfully');
 let currentPopup: any = undefined;
 
 function displayDoor(state: unknown) {
-    if (state === !true) {
+    if (state === true) {
         WA.room.showLayer('door/door_opened');
         WA.room.hideLayer('door/door_closed');
     } else {
