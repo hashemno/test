@@ -6,6 +6,7 @@ console.log('Script started successfully');
 
 let currentPopup: any = undefined;
 
+/*
 function displayDoor(state: unknown) {
     if (state === true) {
         WA.room.showLayer('door/door_opened');
@@ -15,13 +16,12 @@ function displayDoor(state: unknown) {
         WA.room.showLayer('door/door_closed');
     }
 }
-
+*/
 
 WA.onInit().then(async () => {
     console.log('Scripting API ready');
     console.log('Player tags: ', WA.player.tags);
 
-    
     WA.room.area.onEnter('clock').subscribe(() => {
         const today = new Date();
         const time = `${today.getHours()}:${today.getMinutes()}`;
@@ -30,13 +30,13 @@ WA.onInit().then(async () => {
 
     WA.room.area.onLeave('clock').subscribe(closePopup);
 
- 
     WA.state.onVariableChange('doorState').subscribe((doorState) => {
-        displayDoor(doorState);
+        // displayDoor(doorState);
     });
 
-    displayDoor(WA.state.doorState);
+    // displayDoor(WA.state.doorState);
 
+    /*
     WA.room.onEnterLayer('doorsteps/inside_doorstep').subscribe(() => {
         WA.state.doorState = true;
     });
@@ -44,8 +44,8 @@ WA.onInit().then(async () => {
     WA.room.onLeaveLayer('doorsteps/inside_doorstep').subscribe(() => {
         WA.state.doorState = false;
     });
+    */
 
-    
     try {
         await bootstrapExtra();
         console.log('Scripting API Extra ready');
@@ -55,11 +55,13 @@ WA.onInit().then(async () => {
 
 }).catch(e => console.error(e));
 
+/*
 function closePopup() {
     if (currentPopup !== undefined) {
         currentPopup.close();
         currentPopup = undefined;
     }
 }
+*/
 
 export {};
