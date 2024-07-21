@@ -106,7 +106,7 @@
                 {
                  "name":"openWebsite",
                  "type":"string",
-                 "value":"https:\/\/mail.google.com\/mail\/"
+                 "value":"https:\/\/about.google\/intl\/ALL_de\/products\/#all-products"
                 }],
          "type":"tilelayer",
          "visible":true,
